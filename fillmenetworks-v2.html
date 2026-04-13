@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fillme Networks — We Frame the World</title>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red:      #E8001D;
+  --red-dark: #B0001A;
+  --red-soft: #FF3347;
+  --black:    #0F0F0F;
+  --white:    #FFFBF5;
+  --cream:    #FFF6E8;
+  --off:      #F5EFE6;
+  --gray:     #2B2B2B;
+  --r: 'Dela Gothic One', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+#cur { width:14px; height:14px; background:var(--red); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .25s,height .25s,background .25s; mix-blend-mode:multiply; }
+#cur2 { width:38px; height:38px; border:1.5px solid var(--red); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .3s,height .3s; }
+
+/* ── LENS OVERLAY ── */
+#lens {
+  position:fixed; top:0; left:0; width:100vw; height:100vh;
+  pointer-events:none; z-index:200; overflow:hidden;
+}
+#lens::after {
+  content:'';
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:200vmax; height:200vmax;
+  background: radial-gradient(ellipse at center,
+    transparent 0%, transparent var(--r,38%),
+    rgba(15,15,15,.07) calc(var(--r,38%) + 4%),
+    rgba(15,15,15,.45) calc(var(--r,38%) + 16%),
+    rgba(15,15,15,.88) calc(var(--r,38%) + 28%)
+  );
+}
+
+/* ── PROGRESS ── */
+#prog { position:fixed; top:0; left:0; height:3px; background:var(--red); z-index:1000; border-radius:0 2px 2px 0; transition:width .1s linear; }
+
+/* ══ NAV ══════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  padding:1.2rem 2.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+  transition:background .4s, backdrop-filter .4s;
+}
+nav.bg { background:rgba(255,251,245,.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(15,15,15,.06); }
+.nav-logo {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.3rem; letter-spacing:.01em; color:var(--black);
+  text-decoration:none; display:flex; align-items:center; gap:.5rem;
+}
+.logo-rec { width:22px; height:22px; background:var(--red); border-radius:4px; display:flex; align-items:center; justify-content:center; }
+.logo-rec::after { content:''; width:0; height:0; border-style:solid; border-width:5px 0 5px 9px; border-color:transparent transparent transparent #fff; margin-left:1px; }
+/* Pill nav */
+.nav-pill {
+  background:var(--black);
+  border-radius:100px;
+  padding:.45rem .6rem;
+  display:flex; gap:.2rem;
+}
+.nav-pill a {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.72rem; font-weight:500; letter-spacing:.05em;
+  text-transform:uppercase;
+  padding:.42rem 1.1rem;
+  border-radius:100px;
+  color:rgba(255,255,255,.55);
+  text-decoration:none;
+  transition:background .25s,color .25s;
+}
+.nav-pill a.active, .nav-pill a:hover { background:var(--red); color:#fff; }
+.nav-right { display:flex; align-items:center; gap:1rem; }
+.nav-btn {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.7rem; font-weight:500; letter-spacing:.06em; text-transform:uppercase;
+  padding:.55rem 1.4rem; background:var(--red); color:#fff;
+  border:none; border-radius:100px; text-decoration:none;
+  transition:background .25s, transform .2s;
+}
+.nav-btn:hover { background:var(--red-dark); transform:scale(1.03); }
+
+/* ══ HERO ══════════════════════════════ */
+#hero {
+  min-height:100vh; position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  background: var(--hero-bg, #1A0008);
+  transition: background 1s ease;
+}
+.hero-top {
+  flex:1; display:flex; align-items:center;
+  padding:7rem 5vw 0;
+  position:relative; z-index:2;
+}
+.hero-left { flex:1; }
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(255,255,255,.08); border-radius:100px;
+  padding:.35rem 1rem;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.7rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(255,255,255,.6);
+  margin-bottom:1.8rem;
+  opacity:0; animation:fadeUp .7s .3s forwards;
+}
+.eyebrow-dot { width:6px; height:6px; background:var(--red); border-radius:50%; animation:blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.hero-h1 {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:clamp(3.8rem,8.5vw,8rem);
+  line-height:.95;
+  color:#fff;
+  margin-bottom:1.5rem;
+  opacity:0; animation:fadeUp .7s .5s forwards;
+}
+.hero-h1 .stroke { -webkit-text-stroke:2px rgba(255,255,255,.25); color:transparent; }
+.hero-h1 .fill  { color:#fff; }
+.hero-h1 .accent{ color:var(--red-soft); }
+.hero-desc {
+  font-size:1rem; font-weight:400; line-height:1.75;
+  color:rgba(255,255,255,.5); max-width:400px;
+  margin-bottom:2.5rem;
+  opacity:0; animation:fadeUp .7s .7s forwards;
+  font-family:'Space Grotesk',sans-serif;
+}
+.hero-btns {
+  display:flex; gap:1rem; flex-wrap:wrap;
+  opacity:0; animation:fadeUp .7s .9s forwards;
+}
+.btn-solid {
+  font-family:'Space Grotesk',sans-serif; font-size:.75rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+  padding:.85rem 2.2rem; background:var(--red); color:#fff;
+  border-radius:100px; text-decoration:none; border:none;
+  transition:background .25s,transform .2s;
+}
+.btn-solid:hover { background:var(--red-dark); transform:translateY(-2px); }
+.btn-outline {
+  font-family:'Space Grotesk',sans-serif; font-size:.75rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+  padding:.83rem 2.2rem; background:transparent; color:#fff;
+  border-radius:100px; text-decoration:none;
+  border:1.5px solid rgba(255,255,255,.22);
+  transition:border-color .25s,transform .2s;
+}
+.btn-outline:hover { border-color:rgba(255,255,255,.6); transform:translateY(-2px); }
+
+/* Hero right - camera/reel visual */
+.hero-right {
+  flex:1; display:flex; align-items:flex-end; justify-content:center;
+  position:relative; padding-bottom:0; min-height:420px;
+  opacity:0; animation:fadeUp .8s .6s forwards;
+}
+/* The main "camera" floating graphic */
+.camera-wrap {
+  position:relative; width:320px; height:380px;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.camera-body {
+  width:260px; height:180px;
+  background:linear-gradient(145deg, #2a2a2a, #111);
+  border-radius:28px;
+  position:absolute; bottom:80px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07);
+  display:flex; align-items:center; justify-content:center;
+}
+.camera-lens {
+  width:110px; height:110px;
+  border-radius:50%;
+  background: conic-gradient(from 0deg, #111, #333, #111, #2a2a2a, #111);
+  position:relative;
+  box-shadow: 0 0 0 8px #1a1a1a, 0 0 0 14px #222, 0 0 0 18px #1a1a1a;
+  animation: lensRotate 8s linear infinite;
+}
+@keyframes lensRotate { to { transform:rotate(360deg); } }
+.camera-lens::after {
+  content:'';
+  position:absolute; inset:18px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(232,0,29,.6) 0%, rgba(100,0,10,.8) 50%, #000 100%);
+  animation: lensGlow 3s ease infinite;
+}
+@keyframes lensGlow { 0%,100%{opacity:.7} 50%{opacity:1} }
+.camera-hotshoe {
+  position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+  width:50px; height:12px; background:#222; border-radius:4px 4px 0 0;
+}
+.camera-ring {
+  position:absolute; width:140px; height:140px;
+  border:1px solid rgba(232,0,29,.2);
+  border-radius:50%;
+  animation: ringPulse 4s ease infinite;
+}
+.camera-ring:nth-child(2) { width:190px; height:190px; animation-delay:.5s; opacity:.5; }
+.camera-ring:nth-child(3) { width:250px; height:250px; animation-delay:1s; opacity:.25; }
+@keyframes ringPulse { 0%,100%{transform:scale(1);opacity:.3} 50%{transform:scale(1.05);opacity:.6} }
+.camera-shadow {
+  position:absolute; bottom:50px; width:200px; height:20px;
+  background:rgba(0,0,0,.4);
+  border-radius:50%;
+  filter:blur(12px);
+}
+/* Floating badges */
+.badge {
+  position:absolute;
+  background:rgba(255,255,255,.95);
+  border-radius:16px;
+  padding:.6rem 1rem;
+  font-family:'Space Grotesk',sans-serif;
+  box-shadow:0 8px 30px rgba(0,0,0,.2);
+  animation:float 3s ease-in-out infinite;
+}
+.badge-1 { top:30px; right:-20px; font-size:.7rem; color:#111; animation-delay:.3s; }
+.badge-2 { top:160px; left:-40px; font-size:.7rem; color:#111; animation-delay:.9s; }
+.badge span { display:block; font-size:1.1rem; font-weight:700; color:var(--red); }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+/* Hero bottom wave */
+.hero-wave {
+  position:relative; z-index:3;
+  width:100%; flex-shrink:0;
+}
+.hero-wave svg { display:block; width:100%; }
+
+/* Slide dots */
+.hero-dots {
+  position:absolute; bottom:120px; right:5vw;
+  display:flex; flex-direction:column; gap:.5rem; z-index:4;
+}
+.hero-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(255,255,255,.25);
+  cursor:pointer; transition:background .3s,transform .3s;
+}
+.hero-dot.on { background:#fff; transform:scale(1.3); }
+
+/* Slide counter */
+.hero-counter {
+  position:absolute; bottom:120px; left:5vw; z-index:4;
+  display:flex; align-items:center; gap:1rem;
+}
+.hero-counter-num {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:2rem; color:rgba(255,255,255,.6);
+}
+.hero-counter-num span { color:#fff; }
+.hero-prev, .hero-next {
+  width:40px; height:40px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);
+  background:transparent; color:#fff; font-size:1rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:background .25s,border-color .25s;
+}
+.hero-prev:hover,.hero-next:hover { background:var(--red); border-color:var(--red); }
+
+/* Reviews pill */
+.reviews-pill {
+  position:absolute; bottom:125px; left:50%; transform:translateX(-50%);
+  background:rgba(255,255,255,.1); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:100px; padding:.5rem 1.2rem;
+  display:flex; align-items:center; gap:.7rem;
+  z-index:4;
+}
+.review-avatars { display:flex; }
+.rav { width:26px; height:26px; border-radius:50%; background:var(--red); border:2px solid rgba(255,255,255,.4); margin-left:-6px; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-size:.55rem; font-weight:700; color:#fff; }
+.rav:first-child { margin-left:0; background:#444; }
+.rav:nth-child(2) { background:#600010; }
+.review-txt { font-family:'Space Grotesk',sans-serif; font-size:.65rem; color:rgba(255,255,255,.8); }
+.review-txt strong { color:#fff; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══ MARQUEE ══════════════════════════════ */
+.marquee-band {
+  background:var(--red); padding:1rem 0; overflow:hidden;
+}
+.marquee-inner {
+  display:flex; gap:2.5rem;
+  animation:mq 22s linear infinite; width:max-content;
+}
+@keyframes mq { to{transform:translateX(-50%)} }
+.mq-item {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:.85rem; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(15,15,15,.7); white-space:nowrap;
+  display:flex; align-items:center; gap:2rem;
+}
+.mq-star { color:rgba(15,15,15,.4); font-size:.5rem; }
+
+/* ══ SECTION COMMONS ══════════════════════════════ */
+.sec { padding:6rem 5vw; }
+.sec-label {
+  font-family:'Space Grotesk',sans-serif; font-size:.65rem; font-weight:600;
+  letter-spacing:.3em; text-transform:uppercase; color:var(--red);
+  margin-bottom:.75rem;
+}
+.sec-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:clamp(2.8rem,5.5vw,5rem);
+  line-height:1; color:var(--black);
+  margin-bottom:1rem;
+}
+.sec-title .stroke { -webkit-text-stroke:2px var(--black); color:transparent; }
+
+/* ══ ABOUT ══════════════════════════════ */
+#about {
+  background:var(--cream);
+  position:relative; overflow:hidden;
+}
+#about::before {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:160px;
+  background:var(--white);
+  clip-path:ellipse(55% 100% at 50% 100%);
+}
+.about-inner {
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;
+}
+/* Big bold quote */
+.manifesto {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:clamp(2rem,4vw,3.4rem);
+  line-height:1.15; color:var(--black);
+}
+.manifesto em { color:var(--red); font-style:normal; }
+.manifesto .outline { -webkit-text-stroke:2px var(--black); color:transparent; }
+.about-body {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem; font-weight:300; line-height:1.8;
+  color:rgba(15,15,15,.6); margin:1.5rem 0 2.5rem;
+}
+/* Stats in pill cards */
+.stat-pills { display:flex; gap:.75rem; flex-wrap:wrap; }
+.stat-pill {
+  background:#fff;
+  border-radius:20px;
+  padding:1.2rem 1.8rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  flex:1; min-width:120px;
+}
+.sp-num {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:2.2rem; color:var(--black); line-height:1;
+}
+.sp-num sup { color:var(--red); font-size:1rem; }
+.sp-label {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.65rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:rgba(15,15,15,.4); margin-top:.25rem;
+}
+/* About right: stacked feature cards */
+.about-cards { display:flex; flex-direction:column; gap:1rem; }
+.about-card {
+  background:#fff; border-radius:20px;
+  padding:1.5rem 1.8rem;
+  box-shadow:0 4px 24px rgba(0,0,0,.05);
+  display:flex; align-items:center; gap:1.2rem;
+  transition:transform .3s,box-shadow .3s;
+}
+.about-card:hover { transform:translateY(-3px); box-shadow:0 10px 36px rgba(0,0,0,.1); }
+.about-card-icon {
+  width:48px; height:48px; flex-shrink:0;
+  background:var(--red); border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+}
+.about-card-icon svg { fill:#fff; width:22px; height:22px; }
+.about-card-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1rem; color:var(--black); margin-bottom:.2rem;
+}
+.about-card-sub {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.8rem; color:rgba(15,15,15,.45);
+}
+
+/* ══ SERVICES ══════════════════════════════ */
+#services { background:var(--white); }
+.services-inner { max-width:1200px; margin:0 auto; }
+.services-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:3rem; }
+.services-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem;
+}
+.svc-card {
+  background:var(--off); border-radius:28px;
+  padding:2.5rem 2rem;
+  position:relative; overflow:hidden;
+  transition:transform .35s, box-shadow .35s, background .35s;
+  cursor:none;
+}
+.svc-card::before {
+  content:''; position:absolute; bottom:-60px; right:-60px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(232,0,29,.06);
+  transition:transform .5s;
+}
+.svc-card:hover { transform:translateY(-6px); box-shadow:0 20px 60px rgba(232,0,29,.1); background:#fff; }
+.svc-card:hover::before { transform:scale(2); }
+.svc-num {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:3.5rem; color:rgba(15,15,15,.06);
+  line-height:1; margin-bottom:1rem;
+}
+.svc-icon {
+  width:52px; height:52px; background:var(--black); border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:1.2rem;
+  transition:background .3s;
+}
+.svc-card:hover .svc-icon { background:var(--red); }
+.svc-icon svg { fill:#fff; width:24px; height:24px; }
+.svc-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.4rem; letter-spacing:.02em; color:var(--black);
+  margin-bottom:.6rem;
+}
+.svc-desc {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.85rem; font-weight:300; line-height:1.7;
+  color:rgba(15,15,15,.5);
+}
+.svc-arrow {
+  position:absolute; bottom:1.8rem; right:2rem;
+  width:36px; height:36px; background:var(--black); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s,transform .3s;
+}
+.svc-card:hover .svc-arrow { background:var(--red); transform:rotate(45deg); }
+.svc-arrow::after { content:'→'; color:#fff; font-size:.9rem; }
+
+/* ══ WORK / REEL ══════════════════════════════ */
+#work { background:var(--black); padding:6rem 5vw; }
+.work-inner { max-width:1200px; margin:0 auto; }
+.work-head .sec-label { color:rgba(255,255,255,.4); }
+.work-head .sec-title { color:#fff; }
+.work-head .sec-title .stroke { -webkit-text-stroke:2px #fff; }
+.work-head { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:3rem; }
+.work-link {
+  font-family:'Space Grotesk',sans-serif; font-size:.72rem; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:rgba(255,255,255,.4); text-decoration:none;
+  display:flex; align-items:center; gap:.5rem;
+  transition:color .3s;
+}
+.work-link:hover { color:var(--red); }
+.work-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:1.2rem; }
+.wk { background:var(--gray); border-radius:24px; overflow:hidden; position:relative; }
+.wk-a { grid-column:span 7; aspect-ratio:16/10; }
+.wk-b { grid-column:span 5; aspect-ratio:1; }
+.wk-c { grid-column:span 4; aspect-ratio:4/3; }
+.wk-d { grid-column:span 4; aspect-ratio:4/3; }
+.wk-e { grid-column:span 4; aspect-ratio:4/3; }
+/* Cinematic gradient backgrounds per card */
+.wk-a .wk-bg { background:linear-gradient(135deg,#1a0008,#500020,#0f0305); }
+.wk-b .wk-bg { background:linear-gradient(135deg,#080a1a,#20003d,#0a0808); }
+.wk-c .wk-bg { background:linear-gradient(135deg,#0a0808,#300a00,#1a0a00); }
+.wk-d .wk-bg { background:linear-gradient(135deg,#001a10,#003d20,#001008); }
+.wk-e .wk-bg { background:linear-gradient(135deg,#1a1000,#3d2000,#100800); }
+.wk-bg { position:absolute; inset:0; transition:transform .6s ease; }
+.wk:hover .wk-bg { transform:scale(1.06); }
+.wk-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 55%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:1.5rem;
+}
+.wk-client {
+  font-family:'Space Grotesk',sans-serif; font-size:.62rem; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--red-soft);
+  margin-bottom:.3rem;
+}
+.wk-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.3rem; color:#fff; line-height:1.15;
+}
+.wk-play {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) scale(.7);
+  width:54px; height:54px; border-radius:50%;
+  background:rgba(255,255,255,.12); backdrop-filter:blur(4px);
+  border:1.5px solid rgba(255,255,255,.3);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .3s,transform .3s;
+}
+.wk:hover .wk-play { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.wk-play::after { content:''; width:0;height:0;border-style:solid;border-width:9px 0 9px 16px;border-color:transparent transparent transparent #fff; margin-left:3px; }
+/* Film corners */
+.fc { position:absolute; width:18px;height:18px; opacity:0; transition:opacity .3s; }
+.wk:hover .fc { opacity:1; }
+.fc.tl{top:10px;left:10px;border-top:2px solid var(--red);border-left:2px solid var(--red);}
+.fc.tr{top:10px;right:10px;border-top:2px solid var(--red);border-right:2px solid var(--red);}
+.fc.bl{bottom:10px;left:10px;border-bottom:2px solid var(--red);border-left:2px solid var(--red);}
+.fc.br{bottom:10px;right:10px;border-bottom:2px solid var(--red);border-right:2px solid var(--red);}
+
+/* ══ CLIENTS ══════════════════════════════ */
+#clients {
+  background:var(--off);
+  padding:5rem 5vw;
+  overflow:hidden;
+}
+.clients-inner { max-width:1200px; margin:0 auto; }
+.cl-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:3rem; }
+/* Two-row client scroll */
+.cl-scroll { overflow:hidden; }
+.cl-row { display:flex; gap:1rem; margin-bottom:1rem; }
+.cl-row-1 { animation:cl1 28s linear infinite; width:max-content; }
+.cl-row-2 { animation:cl2 32s linear infinite; width:max-content; }
+@keyframes cl1 { to{transform:translateX(-50%)} }
+@keyframes cl2 { 0%{transform:translateX(-50%)} 100%{transform:translateX(0)} }
+.cl-chip {
+  background:#fff; border-radius:100px;
+  padding:.65rem 1.5rem;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.72rem; font-weight:500; letter-spacing:.05em; text-transform:uppercase;
+  color:rgba(15,15,15,.5); white-space:nowrap;
+  transition:background .3s,color .3s;
+}
+.cl-chip:hover { background:var(--red); color:#fff; }
+
+/* ══ PROCESS (Red block like the FAQ section) ══════════════════════════════ */
+#process {
+  background:var(--red);
+  padding:6rem 5vw;
+  position:relative; overflow:hidden;
+}
+#process::before {
+  content:'PROCESS';
+  position:absolute; font-family:'Dela Gothic One',sans-serif;
+  font-size:20vw; color:rgba(255,255,255,.05);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  white-space:nowrap; pointer-events:none;
+}
+.process-inner { max-width:1200px; margin:0 auto; }
+.process-head .sec-label { color:rgba(255,255,255,.55); }
+.process-head .sec-title { color:#fff; }
+.process-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-top:3rem; }
+.proc-card {
+  background:rgba(255,255,255,.1); border-radius:24px;
+  padding:2rem;
+  border:1px solid rgba(255,255,255,.15);
+  transition:background .3s,transform .3s;
+  backdrop-filter:blur(4px);
+}
+.proc-card:hover { background:rgba(255,255,255,.18); transform:translateY(-4px); }
+.proc-num {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:.75rem; letter-spacing:.3em; color:rgba(255,255,255,.4);
+  margin-bottom:1rem;
+}
+.proc-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.7rem; color:#fff; margin-bottom:.6rem; letter-spacing:.02em;
+}
+.proc-desc {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.85rem; font-weight:300; line-height:1.75;
+  color:rgba(255,255,255,.65);
+}
+
+/* ══ CTA ══════════════════════════════ */
+#cta {
+  background:var(--white);
+  padding:7rem 5vw;
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+#cta::before {
+  content:''; position:absolute;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  width:700px; height:700px; border-radius:50%;
+  background:radial-gradient(circle,rgba(232,0,29,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-inner { position:relative; z-index:2; }
+.cta-title {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:clamp(3rem,8vw,7.5rem);
+  line-height:.95; color:var(--black);
+  margin-bottom:1.5rem;
+}
+.cta-title .red { color:var(--red); }
+.cta-title .stroke { -webkit-text-stroke:2px var(--black); color:transparent; }
+.cta-sub {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem; font-weight:300; line-height:1.8;
+  color:rgba(15,15,15,.5); max-width:480px; margin:0 auto 3rem;
+}
+.contact-row {
+  display:flex; justify-content:center; gap:1.5rem;
+  flex-wrap:wrap; margin-top:2.5rem;
+}
+.c-pill {
+  background:var(--off); border-radius:20px;
+  padding:1.5rem 2.5rem;
+  text-decoration:none;
+  display:flex; flex-direction:column; align-items:center; gap:.3rem;
+  transition:background .3s,transform .3s;
+}
+.c-pill:hover { background:var(--red); transform:translateY(-4px); }
+.c-pill:hover .c-label { color:rgba(255,255,255,.6); }
+.c-pill:hover .c-val { color:#fff; }
+.c-label {
+  font-family:'Space Grotesk',sans-serif; font-size:.6rem;
+  font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(15,15,15,.4); transition:color .3s;
+}
+.c-val {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.1rem; color:var(--black); transition:color .3s;
+}
+
+/* ══ FOOTER ══════════════════════════════ */
+footer {
+  background:var(--black);
+  padding:3rem 5vw;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.f-logo {
+  font-family:'Dela Gothic One',sans-serif;
+  font-size:1.2rem; color:#fff; text-decoration:none;
+  display:flex; align-items:center; gap:.5rem;
+}
+.f-copy {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.62rem; letter-spacing:.08em; color:rgba(255,255,255,.25);
+  margin-top:.4rem;
+}
+.f-socials { display:flex; gap:1rem; }
+.f-socials a {
+  font-family:'Space Grotesk',sans-serif; font-size:.62rem;
+  font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(255,255,255,.3); text-decoration:none;
+  padding:.5rem 1.1rem; border:1px solid rgba(255,255,255,.1); border-radius:100px;
+  transition:background .3s,color .3s,border-color .3s;
+}
+.f-socials a:hover { background:var(--red); border-color:var(--red); color:#fff; }
+
+/* ══ REVEAL ══ */
+.reveal { opacity:0; transform:translateY(36px); transition:opacity .8s,transform .8s; }
+.reveal.in { opacity:1; transform:translateY(0); }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s} .d5{transition-delay:.5s}
+
+/* ══ WAVE DIVIDER ══ */
+.wave-sep { display:block; width:100%; overflow:hidden; line-height:0; }
+.wave-sep svg { display:block; width:100%; }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="cur"></div>
+<div id="cur2"></div>
+<div id="lens"></div>
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="logo-rec"></div>
+    Fillme Networks
+  </a>
+  <div class="nav-pill">
+    <a href="#" class="active" id="nl-home">Home</a>
+    <a href="#work" id="nl-work">Films</a>
+    <a href="#services" id="nl-srv">Services</a>
+    <a href="#cta" id="nl-cta">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="mailto:hello@fillmenetworks.com" class="nav-btn">Start a Project</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero" style="--hero-bg:#1A0008;">
+  <div class="hero-top">
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Est. 2014 · New Delhi, India
+      </div>
+      <h1 class="hero-h1" id="hero-h1">
+        <span class="stroke">We</span><br>
+        <span class="fill">Frame</span><br>
+        <span class="accent">the World</span>
+      </h1>
+      <p class="hero-desc" id="hero-desc">
+        India's creative production house — crafting films that move nations, build brands, and leave lasting impressions.
+      </p>
+      <div class="hero-btns">
+        <a href="#work" class="btn-solid">View Our Films</a>
+        <a href="#cta" class="btn-outline">Start a Project</a>
+      </div>
+    </div>
+    <!-- Right: camera graphic -->
+    <div class="hero-right">
+      <div class="camera-wrap">
+        <div class="camera-ring"></div>
+        <div class="camera-ring"></div>
+        <div class="camera-ring"></div>
+        <div class="camera-body">
+          <div class="camera-hotshoe"></div>
+          <div class="camera-lens"></div>
+        </div>
+        <div class="camera-shadow"></div>
+        <!-- Floating badges -->
+        <div class="badge badge-1">10K+ Frames Shot<span>Daily</span></div>
+        <div class="badge badge-2">Award Winning<span>Studio</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews pill -->
+  <div class="reviews-pill">
+    <div class="review-avatars">
+      <div class="rav">AP</div>
+      <div class="rav">TB</div>
+      <div class="rav">FI</div>
+    </div>
+    <div class="review-txt"><strong>500+ Films</strong> delivered to 50+ brands</div>
+  </div>
+
+  <!-- Slide nav -->
+  <div class="hero-counter">
+    <button class="hero-prev" id="hp">&#8592;</button>
+    <button class="hero-next" id="hn">&#8594;</button>
+    <span class="hero-counter-num"><span id="hcur">01</span> / 03</span>
+  </div>
+  <div class="hero-dots">
+    <div class="hero-dot on" data-i="0"></div>
+    <div class="hero-dot" data-i="1"></div>
+    <div class="hero-dot" data-i="2"></div>
+  </div>
+
+  <!-- Wave bottom -->
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill="#FFFBF5"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ══ MARQUEE ══ -->
+<div class="marquee-band">
+  <div class="marquee-inner">
+    <span class="mq-item">Brand Films <span class="mq-star">★</span></span>
+    <span class="mq-item">Documentaries <span class="mq-star">★</span></span>
+    <span class="mq-item">Government Films <span class="mq-star">★</span></span>
+    <span class="mq-item">Corporate Films <span class="mq-star">★</span></span>
+    <span class="mq-item">OTT Content <span class="mq-star">★</span></span>
+    <span class="mq-item">Advertising <span class="mq-star">★</span></span>
+    <span class="mq-item">Post Production <span class="mq-star">★</span></span>
+    <span class="mq-item">Digital Content <span class="mq-star">★</span></span>
+    <span class="mq-item">Brand Films <span class="mq-star">★</span></span>
+    <span class="mq-item">Documentaries <span class="mq-star">★</span></span>
+    <span class="mq-item">Government Films <span class="mq-star">★</span></span>
+    <span class="mq-item">Corporate Films <span class="mq-star">★</span></span>
+    <span class="mq-item">OTT Content <span class="mq-star">★</span></span>
+    <span class="mq-item">Advertising <span class="mq-star">★</span></span>
+    <span class="mq-item">Post Production <span class="mq-star">★</span></span>
+    <span class="mq-item">Digital Content <span class="mq-star">★</span></span>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<section id="about" class="sec">
+  <div class="about-inner">
+    <div>
+      <div class="sec-label reveal">Who We Are</div>
+      <div class="manifesto reveal d1">
+        Stories<br>that <em>move</em><br><span class="outline">nations</span>
+      </div>
+      <p class="about-body reveal d2">
+        Fillme Networks is a full-service creative production house rooted in New Delhi. 
+        For over a decade, we've partnered with India's biggest brands, ministries, and media houses — 
+        turning ideas into cinematic experiences that resonate long after the credits roll.
+      </p>
+      <div class="stat-pills reveal d3">
+        <div class="stat-pill">
+          <div class="sp-num">10<sup>+</sup></div>
+          <div class="sp-label">Years<br>Active</div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-num">500<sup>+</sup></div>
+          <div class="sp-label">Films<br>Produced</div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-num">50<sup>+</sup></div>
+          <div class="sp-label">Brand<br>Partners</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-cards reveal d2">
+      <div class="about-card">
+        <div class="about-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        </div>
+        <div>
+          <div class="about-card-title">Film Production</div>
+          <div class="about-card-sub">End-to-end film production across formats and genres</div>
+        </div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zm0 12c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+        </div>
+        <div>
+          <div class="about-card-title">Government & Institutional</div>
+          <div class="about-card-sub">Policy films for 15+ central ministries</div>
+        </div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13v-6l5 3-5 3z"/></svg>
+        </div>
+        <div>
+          <div class="about-card-title">OTT & Broadcast</div>
+          <div class="about-card-sub">Documentaries aired on History TV18, Epic, Network18</div>
+        </div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2.5c1.38 0 2.5 1.12 2.5 2.5S13.38 11.5 12 11.5 9.5 10.38 9.5 9s1.12-2.5 2.5-2.5zm5 9h-10v-.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5v.5z"/></svg>
+        </div>
+        <div>
+          <div class="about-card-title">Brand Storytelling</div>
+          <div class="about-card-sub">TVCs and digital films for Tata, Apollo, Fabindia & more</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave between about and services -->
+<div class="wave-sep" style="background:var(--cream)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,20 1440,40 L1440,80 L0,80 Z" fill="var(--white)"/>
+  </svg>
+</div>
+
+<!-- ══ SERVICES ══ -->
+<section id="services" class="sec">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <div>
+        <div class="sec-label">What We Do</div>
+        <div class="sec-title">Our <span class="stroke">Craft</span></div>
+      </div>
+      <a href="#cta" class="btn-solid" style="font-size:.72rem">Get a Quote</a>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card reveal d1">
+        <div class="svc-num">01</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg></div>
+        <div class="svc-title">Brand Films</div>
+        <div class="svc-desc">Cinematic stories for India's most recognized brands. TVCs, long-format, and digital campaigns.</div>
+        <div class="svc-arrow"></div>
+      </div>
+      <div class="svc-card reveal d2">
+        <div class="svc-num">02</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13v-6l5 3-5 3z"/></svg></div>
+        <div class="svc-title">Documentaries</div>
+        <div class="svc-desc">Investigative and cultural docs for OTT, broadcast, and institutional archives across India.</div>
+        <div class="svc-arrow"></div>
+      </div>
+      <div class="svc-card reveal d3">
+        <div class="svc-num">03</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></div>
+        <div class="svc-title">Government Films</div>
+        <div class="svc-desc">Policy communication and social campaigns for central ministries, NDMA, Coast Guard, and more.</div>
+        <div class="svc-arrow"></div>
+      </div>
+      <div class="svc-card reveal d2">
+        <div class="svc-num">04</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 12H5v-2h6v2zm8-4H5v-2h14v2zm0-4H5V6h14v2z"/></svg></div>
+        <div class="svc-title">Corporate Films</div>
+        <div class="svc-desc">Investor narratives, product launches, internal comms, and leadership films that define culture.</div>
+        <div class="svc-arrow"></div>
+      </div>
+      <div class="svc-card reveal d3">
+        <div class="svc-num">05</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+        <div class="svc-title">Digital Content</div>
+        <div class="svc-desc">Social-first films, reels, and digital campaigns engineered for engagement on every platform.</div>
+        <div class="svc-arrow"></div>
+      </div>
+      <div class="svc-card reveal d4">
+        <div class="svc-num">06</div>
+        <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM8 15c0-1.66 1.34-3 3-3 .35 0 .69.07 1 .18V6h5v2h-3v7.03A2.99 2.99 0 0 1 11 18c-1.66 0-3-1.34-3-3z"/></svg></div>
+        <div class="svc-title">Post Production</div>
+        <div class="svc-desc">Editing, 4K color grading, VFX, motion graphics, and Dolby sound — all under one roof.</div>
+        <div class="svc-arrow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave -->
+<div class="wave-sep" style="background:var(--white)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C200,70 500,0 720,40 C940,80 1200,10 1440,50 L1440,80 L0,80 Z" fill="var(--black)"/>
+  </svg>
+</div>
+
+<!-- ══ WORK ══ -->
+<section id="work">
+  <div class="work-inner">
+    <div class="work-head reveal">
+      <div>
+        <div class="sec-label">Selected Work</div>
+        <div class="sec-title" style="color:#fff">The <span style="-webkit-text-stroke:2px #fff;color:transparent">Reel</span></div>
+      </div>
+      <a href="https://www.instagram.com/fillme_networks/" target="_blank" class="work-link">View All Films →</a>
+    </div>
+    <div class="work-grid reveal d1">
+      <!-- A -->
+      <div class="wk wk-a">
+        <div class="wk-bg"></div>
+        <div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div>
+        <div class="wk-play"></div>
+        <div class="wk-overlay">
+          <div class="wk-client">Apollo Tyres</div>
+          <div class="wk-title">Terrain Masters<br>Campaign</div>
+        </div>
+      </div>
+      <!-- B -->
+      <div class="wk wk-b">
+        <div class="wk-bg"></div>
+        <div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div>
+        <div class="wk-play"></div>
+        <div class="wk-overlay">
+          <div class="wk-client">Ministry of Defence</div>
+          <div class="wk-title">Nation's Shield</div>
+        </div>
+      </div>
+      <!-- C -->
+      <div class="wk wk-c">
+        <div class="wk-bg"></div>
+        <div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div>
+        <div class="wk-play"></div>
+        <div class="wk-overlay">
+          <div class="wk-client">Fabindia</div>
+          <div class="wk-title">Roots &amp; Routes</div>
+        </div>
+      </div>
+      <!-- D -->
+      <div class="wk wk-d">
+        <div class="wk-bg"></div>
+        <div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div>
+        <div class="wk-play"></div>
+        <div class="wk-overlay">
+          <div class="wk-client">Tata Power</div>
+          <div class="wk-title">Powering Tomorrow</div>
+        </div>
+      </div>
+      <!-- E -->
+      <div class="wk wk-e">
+        <div class="wk-bg"></div>
+        <div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div>
+        <div class="wk-play"></div>
+        <div class="wk-overlay">
+          <div class="wk-client">History TV18</div>
+          <div class="wk-title">Chronicles of India</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave -->
+<div class="wave-sep" style="background:var(--black)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C300,80 600,0 900,50 C1100,80 1300,20 1440,40 L1440,80 L0,80 Z" fill="var(--off)"/>
+  </svg>
+</div>
+
+<!-- ══ CLIENTS ══ -->
+<section id="clients" style="background:var(--off);padding:5rem 0 5rem">
+  <div class="clients-inner" style="padding:0 5vw">
+    <div class="cl-header reveal">
+      <div>
+        <div class="sec-label">Trusted By</div>
+        <div class="sec-title">Our <span class="stroke">Partners</span></div>
+      </div>
+      <p style="font-family:'Space Grotesk',sans-serif;font-size:.85rem;color:rgba(15,15,15,.45);max-width:300px">
+        From India's largest brands to Central Government ministries
+      </p>
+    </div>
+  </div>
+  <div class="cl-scroll">
+    <div class="cl-row cl-row-1">
+      <div class="cl-chip">Apollo Tyres</div><div class="cl-chip">Tata Power</div><div class="cl-chip">Fabindia</div><div class="cl-chip">History TV18</div><div class="cl-chip">Min. of Defence</div><div class="cl-chip">NCRTC</div><div class="cl-chip">Incredible India</div><div class="cl-chip">Livpure</div><div class="cl-chip">Network18</div><div class="cl-chip">KEI Industries</div><div class="cl-chip">Carlsberg</div><div class="cl-chip">Mastercard</div><div class="cl-chip">Club Vistara</div><div class="cl-chip">PNB Housing</div><div class="cl-chip">Pocket FM</div><div class="cl-chip">Namami Gange</div>
+      <div class="cl-chip">Apollo Tyres</div><div class="cl-chip">Tata Power</div><div class="cl-chip">Fabindia</div><div class="cl-chip">History TV18</div><div class="cl-chip">Min. of Defence</div><div class="cl-chip">NCRTC</div><div class="cl-chip">Incredible India</div><div class="cl-chip">Livpure</div><div class="cl-chip">Network18</div><div class="cl-chip">KEI Industries</div><div class="cl-chip">Carlsberg</div><div class="cl-chip">Mastercard</div><div class="cl-chip">Club Vistara</div><div class="cl-chip">PNB Housing</div><div class="cl-chip">Pocket FM</div><div class="cl-chip">Namami Gange</div>
+    </div>
+    <div class="cl-row cl-row-2">
+      <div class="cl-chip">Indian Coast Guard</div><div class="cl-chip">MNRE India</div><div class="cl-chip">H&amp;M</div><div class="cl-chip">LivGuard Solar</div><div class="cl-chip">Posterscope</div><div class="cl-chip">Maccaferri</div><div class="cl-chip">NDMA</div><div class="cl-chip">Gainwell</div><div class="cl-chip">DIPR</div><div class="cl-chip">EPIC Channel</div><div class="cl-chip">Allterra</div><div class="cl-chip">InstaDecor</div><div class="cl-chip">Jashan Food</div><div class="cl-chip">HUSLR</div><div class="cl-chip">Uttarakhand Govt</div><div class="cl-chip">MP Tourism</div>
+      <div class="cl-chip">Indian Coast Guard</div><div class="cl-chip">MNRE India</div><div class="cl-chip">H&amp;M</div><div class="cl-chip">LivGuard Solar</div><div class="cl-chip">Posterscope</div><div class="cl-chip">Maccaferri</div><div class="cl-chip">NDMA</div><div class="cl-chip">Gainwell</div><div class="cl-chip">DIPR</div><div class="cl-chip">EPIC Channel</div><div class="cl-chip">Allterra</div><div class="cl-chip">InstaDecor</div><div class="cl-chip">Jashan Food</div><div class="cl-chip">HUSLR</div><div class="cl-chip">Uttarakhand Govt</div><div class="cl-chip">MP Tourism</div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave into red process -->
+<div class="wave-sep" style="background:var(--off)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,50 C200,10 500,80 720,30 C900,0 1200,60 1440,30 L1440,80 L0,80 Z" fill="var(--red)"/>
+  </svg>
+</div>
+
+<!-- ══ PROCESS (Red block) ══ -->
+<section id="process">
+  <div class="process-inner">
+    <div class="process-head reveal">
+      <div class="sec-label">How We Work</div>
+      <div class="sec-title" style="color:#fff">The <span style="-webkit-text-stroke:2px rgba(255,255,255,.35);color:transparent">Process</span></div>
+    </div>
+    <div class="process-grid">
+      <div class="proc-card reveal d1">
+        <div class="proc-num">STEP 01</div>
+        <div class="proc-title">Discovery &amp; Brief</div>
+        <div class="proc-desc">We immerse in your brand, understand your audience, and craft a creative brief that becomes the project's north star.</div>
+      </div>
+      <div class="proc-card reveal d2">
+        <div class="proc-num">STEP 02</div>
+        <div class="proc-title">Script &amp; Concept</div>
+        <div class="proc-desc">Our writers and directors develop the visual language, narrative arc, and shot treatment that brings your story alive.</div>
+      </div>
+      <div class="proc-card reveal d3">
+        <div class="proc-num">STEP 03</div>
+        <div class="proc-title">Production</div>
+        <div class="proc-desc">Full-crew shoots with top-tier cinematography. We handle casting, locations, art direction, and every detail on set.</div>
+      </div>
+      <div class="proc-card reveal d4">
+        <div class="proc-num">STEP 04</div>
+        <div class="proc-title">Post &amp; Delivery</div>
+        <div class="proc-desc">Editing, color grading, VFX, and Dolby sound. We perfect every frame before delivery in any format, for any platform.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave out of red -->
+<div class="wave-sep" style="background:var(--red)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 C400,80 800,0 1100,50 C1250,70 1380,20 1440,40 L1440,80 L0,80 Z" fill="var(--white)"/>
+  </svg>
+</div>
+
+<!-- ══ CTA ══ -->
+<section id="cta">
+  <div class="cta-inner reveal">
+    <div class="sec-label" style="text-align:center">Let's Collaborate</div>
+    <div class="cta-title">
+      Make<br><span class="red">Something</span><br><span class="stroke">Unforgettable</span>
+    </div>
+    <p class="cta-sub">Have a story that deserves to be told on screen? We'd love to hear it.</p>
+    <a href="mailto:hello@fillmenetworks.com" class="btn-solid" style="font-size:.8rem;padding:1rem 3rem">
+      hello@fillmenetworks.com
+    </a>
+    <div class="contact-row reveal d2">
+      <a href="tel:+919818180445" class="c-pill">
+        <span class="c-label">Call Us</span>
+        <span class="c-val">+91 98181 80445</span>
+      </a>
+      <a href="mailto:hello@fillmenetworks.com" class="c-pill">
+        <span class="c-label">Email</span>
+        <span class="c-val">hello@fillmenetworks.com</span>
+      </a>
+      <div class="c-pill" style="cursor:default">
+        <span class="c-label">Based In</span>
+        <span class="c-val">New Delhi, India</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div>
+    <a href="#" class="f-logo">
+      <div class="logo-rec"></div>
+      Fillme Networks
+    </a>
+    <div class="f-copy">© 2025 Fillme Networks Private Limited. All rights reserved.</div>
+  </div>
+  <div class="f-socials">
+    <a href="https://www.instagram.com/fillme_networks/" target="_blank">Instagram</a>
+    <a href="https://www.youtube.com/@FillmeNetworks" target="_blank">YouTube</a>
+    <a href="https://www.linkedin.com/company/fillme-networks" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR
+const cur = document.getElementById('cur');
+const cur2 = document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+(function loop(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  cur2.style.left=rx+'px'; cur2.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button,.svc-card,.wk,.about-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ cur.style.width='22px'; cur.style.height='22px'; cur.style.background='rgba(232,0,29,.35)'; cur2.style.width='56px'; cur2.style.height='56px'; });
+  el.addEventListener('mouseleave',()=>{ cur.style.width='14px'; cur.style.height='14px'; cur.style.background='var(--red)'; cur2.style.width='38px'; cur2.style.height='38px'; });
+});
+
+// ── LENS SCROLL
+const lens = document.getElementById('lens');
+let lensR=38, lensTarget=38, lastSY=0, lensTO;
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  const prog=(sy/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('prog').style.width=prog+'%';
+  document.getElementById('nav').classList.toggle('bg',sy>60);
+  const delta=sy-lastSY; lastSY=sy;
+  const spd=Math.abs(delta);
+  if(spd>1.5) lensTarget = delta>0 ? Math.max(18,lensR-spd*.35) : Math.min(52,lensR+spd*.35);
+  clearTimeout(lensTO); lensTO=setTimeout(()=>{ lensTarget=40; },350);
+  document.querySelectorAll('.reveal').forEach(el=>{
+    if(el.getBoundingClientRect().top<window.innerHeight*.88) el.classList.add('in');
+  });
+});
+(function lensLoop(){
+  lensR+=(lensTarget-lensR)*.07;
+  lens.style.setProperty('--r', lensR+'%');
+  requestAnimationFrame(lensLoop);
+})();
+
+// ── HERO PARALLAX
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  if(sy<window.innerHeight){
+    const hero=document.getElementById('hero');
+    hero.style.transform=`translateY(${sy*.35}px)`;
+    const hc=hero.querySelector('.hero-top');
+    if(hc){ hc.style.opacity=1-(sy/(window.innerHeight*.7)); }
+  }
+});
+
+// ── HERO SLIDER
+const slides=[
+  { bg:'#1A0008', h1:'<span class="stroke">We</span><br><span class="fill">Frame</span><br><span class="accent">the World</span>', desc:'India\'s creative production house — crafting films that move nations, build brands, and leave lasting impressions.' },
+  { bg:'#080818', h1:'<span class="stroke">We</span><br><span class="fill">Tell</span><br><span class="accent">Stories</span>', desc:'From government ministries to global brands — delivering cinematic narratives on every screen imaginable.' },
+  { bg:'#0A0A00', h1:'<span class="stroke">We</span><br><span class="fill">Create</span><br><span class="accent">Legacies</span>', desc:'Over a decade of award-winning production. 500+ films. 50+ partners. One passionate team.' },
+];
+let cur_s=0;
+const hero=document.getElementById('hero');
+const h1El=document.getElementById('hero-h1');
+const descEl=document.getElementById('hero-desc');
+const dots=document.querySelectorAll('.hero-dot');
+const hcurEl=document.getElementById('hcur');
+
+function goSlide(i){
+  cur_s=(i+slides.length)%slides.length;
+  hero.style.background=slides[cur_s].bg;
+  h1El.style.opacity='0'; h1El.style.transform='translateY(20px)';
+  descEl.style.opacity='0';
+  setTimeout(()=>{
+    h1El.innerHTML=slides[cur_s].h1;
+    descEl.textContent=slides[cur_s].desc;
+    h1El.style.transition='opacity .6s,transform .6s';
+    h1El.style.opacity='1'; h1El.style.transform='translateY(0)';
+    descEl.style.transition='opacity .6s .1s'; descEl.style.opacity='1';
+  },250);
+  dots.forEach((d,idx)=>d.classList.toggle('on',idx===cur_s));
+  hcurEl.textContent=String(cur_s+1).padStart(2,'0');
+}
+document.getElementById('hn').addEventListener('click',()=>goSlide(cur_s+1));
+document.getElementById('hp').addEventListener('click',()=>goSlide(cur_s-1));
+dots.forEach(d=>d.addEventListener('click',()=>goSlide(parseInt(d.dataset.i))));
+setInterval(()=>goSlide(cur_s+1),5000);
+
+// ── PILL NAV active on scroll
+const sections={home:0,work:document.getElementById('work'),services:document.getElementById('services'),cta:document.getElementById('cta')};
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY+100;
+  ['nl-home','nl-work','nl-srv','nl-cta'].forEach(id=>document.getElementById(id)?.classList.remove('active'));
+  if(sections.cta && sy>=sections.cta.offsetTop){ document.getElementById('nl-cta')?.classList.add('active'); }
+  else if(sections.services && sy>=sections.services.offsetTop){ document.getElementById('nl-srv')?.classList.add('active'); }
+  else if(sections.work && sy>=sections.work.offsetTop){ document.getElementById('nl-work')?.classList.add('active'); }
+  else { document.getElementById('nl-home')?.classList.add('active'); }
+});
+
+// ── INITIAL REVEAL
+setTimeout(()=>{ document.querySelectorAll('.reveal').forEach(el=>{ if(el.getBoundingClientRect().top<window.innerHeight*.88) el.classList.add('in'); }); },200);
+</script>
+</body>
+</html>
